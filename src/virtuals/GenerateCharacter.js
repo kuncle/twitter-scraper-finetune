@@ -4,7 +4,7 @@ dotenv.config();
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import OpenAI from 'openai';
+import OpenAI, {AzureOpenAI} from 'openai';
 import TwitterPipeline from '../twitter/TwitterPipeline.js';
 import chalk from 'chalk';
 import ora from 'ora';
@@ -172,15 +172,17 @@ Ensure that the character description and prompts are detailed enough to capture
 
 Format your response as a valid JSON object, with each field containing the appropriate content as described above. Do not include any additional commentary or explanations outside of the JSON structure.`;
 
-    const openai = new OpenAI({
+    const openai = new AzureOpenAI({
         apiKey: process.env.OPENAI_API_KEY,
+        endpoint: process.env.OPENAI_API_URL,
+        apiVersion: process.env.OPENAI_API_VERSION,
     });
 
     const spinner = ora('Generating character...').start();
 
     try {
         const response = await openai.chat.completions.create({
-            model: 'gpt-4o',
+            model: 'gpt4o',
             messages: [{role: 'user', content: prompt}],
             response_format: {type: 'json_object'},
         });
